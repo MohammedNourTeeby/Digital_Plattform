@@ -12,7 +12,9 @@ import {
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
+  BarController,
+  LineController
 } from 'chart.js';
 import { motion } from 'framer-motion';
 import { FiDownload, FiRefreshCw, FiSettings } from 'react-icons/fi';
@@ -20,7 +22,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import annotationPlugin from 'chartjs-plugin-annotation';
 
-// تسجيل مكونات Chart.js
+// تسجيل مكونات Chart.js بشكل كامل
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -31,6 +33,8 @@ ChartJS.register(
   Tooltip,
   Legend,
   Filler,
+  BarController,
+  LineController,
   annotationPlugin
 );
 
@@ -40,7 +44,7 @@ const AdvancedFinancialDashboard = () => {
   const [activeTab, setActiveTab] = useState('monthly');
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // بيانات افتراضية متطورة
+  // البيانات الأولية المعدلة
   const [financialData, setFinancialData] = useState({
     balance: 90.00,
     revenue: 90.00,
@@ -53,7 +57,13 @@ const AdvancedFinancialDashboard = () => {
           label: 'الأداء التراكمي',
           data: [45, 60, 75, 80, 90, 95],
           borderColor: '#4F46E5',
-          backgroundColor: 'rgba(79, 70, 229, 0.1)',
+          backgroundColor: (context) => {
+            const ctx = context.chart.ctx;
+            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.3)');
+            gradient.addColorStop(1, 'rgba(79, 70, 229, 0.01)');
+            return gradient;
+          },
           borderWidth: 3,
           fill: true,
           tension: 0.4,
@@ -74,7 +84,7 @@ const AdvancedFinancialDashboard = () => {
     }
   });
 
-  // إعدادات المخطط المتقدمة
+  // إعدادات المخطط المحسنة
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
@@ -104,7 +114,7 @@ const AdvancedFinancialDashboard = () => {
       },
       annotation: {
         annotations: {
-          line1: {
+          targetLine: {
             type: 'line',
             yMin: 80,
             yMax: 80,
@@ -137,6 +147,7 @@ const AdvancedFinancialDashboard = () => {
         }
       },
       y: {
+        beginAtZero: true,
         grid: {
           color: '#E5E7EB'
         },
@@ -146,49 +157,66 @@ const AdvancedFinancialDashboard = () => {
             size: 12
           },
           callback: function(value) {
-            return '$' + value;
+            return `$${value}`;
           }
         }
       }
     }
   };
 
-  // محاكاة تحديث البيانات
+  // محاكاة تحديث البيانات مع تحسينات
   const refreshData = () => {
-    setFinancialData(prev => ({
-      ...prev,
-      balance: Math.random() * 200,
-      revenue: Math.random() * 300,
-      performance: `${Math.random() > 0.5 ? '+' : '-'}${(Math.random() * 20).toFixed(1)}%`,
-      chartData: {
-        ...prev.chartData,
-        datasets: prev.chartData.datasets.map(dataset => ({
-          ...dataset,
-          data: dataset.data.map(() => Math.floor(Math.random() * 100))
-        }))
-      }
-    }));
+    setFinancialData(prev => {
+      const newData = prev.chartData.datasets.map(dataset => ({
+        ...dataset,
+        data: dataset.data.map(() => Math.floor(Math.random() * 100))
+      }));
+      
+      return {
+        ...prev,
+        balance: Math.random() * 200,
+        revenue: Math.random() * 300,
+        performance: `${Math.random() > 0.5 ? '+' : '-'}${(Math.random() * 20).toFixed(1)}%`,
+        chartData: {
+          ...prev.chartData,
+          datasets: newData
+        }
+      };
+    });
   };
+
+  useEffect(() => {
+    // تهيئة المخطط عند التحميل
+    const chart = chartRef.current;
+    if (chart) {
+      chart.update();
+    }
+  }, []);
 
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
       className={`bg-white rounded-2xl shadow-2xl p-6 md:p-8 ${
         isFullscreen ? 'fixed inset-0 z-50' : 'relative'
       }`}
     >
-      {/* شريط التحكم العلوي */}
+      {/* شريط التحكم العلوي المعدل */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h1 className="text-3xl font-bold text-indigo-600 font-[Tajawal]">Smarby</h1>
+        <div className="flex items-center gap-3">
+          <span className="logo-hb">HB+</span>
+          <h1 className="text-3xl font-bold text-indigo-600 font-[Tajawal]">Smarby</h1>
+        </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col md:flex-row items-center gap-4">
           <DatePicker
             selected={startDate}
-            onChange={(date) => setStartDate(date)}
+            onChange={setStartDate}
             dateFormat="MM/yyyy"
             showMonthYearPicker
-            className="input-style font-[Tajawal]"
+            className="input-style font-[Tajawal] px-4 py-2 border rounded-lg"
+            popperClassName="rtl"
           />
           
           <div className="flex gap-2 bg-gray-100 p-1 rounded-lg">
@@ -196,11 +224,11 @@ const AdvancedFinancialDashboard = () => {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-md transition-colors ${
+                className={`px-4 py-2 rounded-md transition-all ${
                   activeTab === tab 
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-gradient-to-br from-indigo-500 to-purple-500 text-white'
                     : 'hover:bg-gray-200'
-                } font-[Tajawal]`}
+                } font-[Tajawal] text-sm`}
               >
                 {tab === 'daily' ? 'يومي' : tab === 'monthly' ? 'شهري' : 'سنوي'}
               </button>
@@ -209,64 +237,87 @@ const AdvancedFinancialDashboard = () => {
         </div>
       </div>
 
-      {/* بطاقات البيانات التفاعلية */}
+      {/* بطاقات البيانات المحسنة */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <motion.div 
-          whileHover={{ y: -5 }}
-          className="bg-indigo-50 p-6 rounded-xl relative overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-indigo-100/50 to-transparent" />
-          <h3 className="text-lg font-[Tajawal] text-gray-600">الرصيد الحالي</h3>
-          <div className="flex items-baseline gap-2 mt-2">
-            <p className="text-3xl font-bold text-indigo-600">
-              ${financialData.balance.toFixed(2)}
-            </p>
-            <span className="text-sm text-green-600 bg-green-100 px-2 py-1 rounded-full">
-              {financialData.performance}
-            </span>
-          </div>
-        </motion.div>
-
-        {/* ... بطاقات أخرى بنفس النمط ... */}
+        {[
+          { 
+            title: 'الرصيد الحالي',
+            value: financialData.balance,
+            gradient: 'from-indigo-100/50 to-transparent',
+            color: 'text-indigo-600'
+          },
+          { 
+            title: 'الإيرادات الشهرية',
+            value: financialData.revenue,
+            gradient: 'from-green-100/50 to-transparent',
+            color: 'text-green-600'
+          },
+          { 
+            title: 'مؤشر الأداء',
+            value: financialData.performance,
+            gradient: 'from-blue-100/50 to-transparent',
+            color: 'text-blue-600'
+          }
+        ].map((card, index) => (
+          <motion.div 
+            key={index}
+            whileHover={{ y: -5 }}
+            className="p-6 rounded-xl relative overflow-hidden bg-gradient-to-r"
+          >
+            <div className={`absolute inset-0 bg-gradient-to-r ${card.gradient}`} />
+            <h3 className="text-lg font-[Tajawal] text-gray-600">{card.title}</h3>
+            <div className="flex items-baseline gap-2 mt-2">
+              <p className={`text-3xl font-bold ${card.color}`}>
+                {typeof card.value === 'string' ? card.value : `$${card.value.toFixed(2)}`}
+              </p>
+            </div>
+          </motion.div>
+        ))}
       </div>
 
-      {/* المخطط التفاعلي */}
+      {/* المخطط التفاعلي المعدل */}
       <div className="relative h-[500px]">
         <Bar
           ref={chartRef}
           data={financialData.chartData}
           options={chartOptions}
           className="rtl:scale-x-[-1]"
+          fallbackContent={<div className="text-center p-4">جارٍ تحميل البيانات...</div>}
         />
         
-        {/* أدوات التحكم بالمخطط */}
+        {/* أدوات التحكم المحسنة */}
         <div className="absolute top-4 right-4 flex gap-2">
-          <button 
+          <motion.button 
+            whileTap={{ scale: 0.9 }}
             onClick={refreshData}
             className="p-2 bg-white shadow-md rounded-lg hover:bg-gray-50"
           >
             <FiRefreshCw className="w-5 h-5 text-gray-600" />
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             onClick={() => setIsFullscreen(!isFullscreen)}
             className="p-2 bg-white shadow-md rounded-lg hover:bg-gray-50"
           >
             {isFullscreen ? '⤡' : '⤢'}
-          </button>
+          </motion.button>
         </div>
       </div>
 
-      {/* شريط التحكم السفلي */}
+      {/* شريط التحكم السفلي المعدل */}
       <div className="mt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="flex items-center gap-2 text-gray-600">
+        <div className="flex items-center gap-2 text-gray-600 hover:text-indigo-600 transition-colors cursor-pointer">
           <FiSettings className="w-5 h-5" />
           <span className="font-[Tajawal]">الإعدادات المتقدمة</span>
         </div>
         
-        <button className="btn-indigo">
+        <motion.button 
+          whileHover={{ scale: 1.05 }}
+          className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-6 py-2 rounded-lg flex items-center"
+        >
           <FiDownload className="ml-2" />
-          تصدير تقرير كامل
-        </button>
+          <span className="font-[Tajawal]">تصدير تقرير كامل</span>
+        </motion.button>
       </div>
     </motion.div>
   );
