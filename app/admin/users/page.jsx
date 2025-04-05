@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { users } from '@/data/users';
+import { users } from '../../../data/users';
 import UserTable from '@/components/UserTable';
 import UserFilter from '@/components/UserFilter';
 

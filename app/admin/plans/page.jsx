@@ -1,4 +1,4 @@
-import { plans } from '@/data/plans';
+import { plans } from '../../../data/plans';
 import InvestmentPlanTable from '@/components/InvestmentPlanTable';
 
 export default function PlansPage() {

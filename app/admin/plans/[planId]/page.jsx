@@ -2,8 +2,8 @@
 import React from 'react'; // أضفنا استيراد React
 import { use } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { plans } from '@/data/plans';
-import { subscriptions } from '@/data/subscriptions';
+import { plans } from '../../../../data/plans';
+import { subscriptions } from '../../../../data/subscriptions';
 import PaymentSchedule from '@/components/PaymentSchedule';
 import PerformanceChart from '@/components/PerformanceChart';
 import SubscriptionList from '@/components/SubscriptionList';

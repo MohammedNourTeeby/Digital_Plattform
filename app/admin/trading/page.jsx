@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { historicalData, generateMockData } from '@/data/marketData';
+import { historicalData, generateMockData } from '../../../data/marketData';
 import CandleChart from '@/components/CandleChart';
 import TechnicalAnalysis from '@/components/TechnicalAnalysis';
 import TradingControls from '@/components/TradingControls';
