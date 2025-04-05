@@ -1,7 +1,7 @@
-import { transactions } from '@/data/transactions';
+import { transactions } from '../../../../data/transactions';
 import TransactionTimeline from '@/components/TransactionTimeline';
 import StatusBadge from '@/components/StatusBadge';
-import { getBlockchainData } from '@/data/blockchain';
+import { getBlockchainData } from '../../../../data/blockchain';
 
 export default function TransactionDetail({ params }) {
   const tx = transactions.find(t => t.id === params.transactionId);

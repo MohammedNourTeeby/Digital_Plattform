@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { users } from '@/data/users';
+import { users } from '../../../../data/users';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import KycBadge from '@/components/KycBadge';
 
