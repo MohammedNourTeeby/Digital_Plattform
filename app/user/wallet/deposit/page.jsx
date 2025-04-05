@@ -1,34 +1,41 @@
-import QrCodeGenerator from '@/components/QrCodeGenerator';
+'use client'; // تأكد من وجود هذه السطر في بداية الملف
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function DepositPage() {
-  const walletAddress = '0x3FZbgi29vcjqGFRNdkf94kfMK';
+  const router = useRouter();
+  const [amount, setAmount] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // معالجة الإيداع هنا
+    router.push('/user/wallet');
+  };
 
   return (
     <div className="p-6 max-w-2xl">
       <h1 className="text-2xl font-bold mb-6">إيداع الأموال</h1>
       
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-lg font-semibold mb-4">عنوان الإيداع</h2>
-        
-        <div className="flex flex-col items-center gap-4">
-          <QrCodeGenerator value={walletAddress} />
-          
-          <div className="w-full p-3 bg-gray-100 rounded flex items-center justify-between">
-            <span className="font-mono">{walletAddress}</span>
-            <button 
-              onClick={() => navigator.clipboard.writeText(walletAddress)}
-              className="text-blue-600 hover:text-blue-800"
-            >
-              نسخ
-            </button>
-          </div>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block mb-2">المبلغ</label>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full p-2 border rounded"
+            placeholder="أدخل المبلغ"
+          />
         </div>
 
-        <div className="mt-8">
-          <h3 className="font-semibold mb-4">آخر الإيداعات</h3>
-          {/* يمكن إضافة قائمة بالإيداعات السابقة هنا */}
-        </div>
-      </div>
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+        >
+          تأكيد الإيداع
+        </button>
+      </form>
     </div>
   );
 }

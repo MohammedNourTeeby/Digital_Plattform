@@ -1,26 +1,42 @@
-"use client"
-import ReportCarda from '@/components/ReportCarda';
-import ExportButton from '@/components/ExportButton';
+// app/user/reports/financial/page.jsx
+'use client';
+import { Bar } from 'react-chartjs-2';
 import { financialData } from '../../../../data/financialReports';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 export default function FinancialReports() {
+  // تأكد من وجود البيانات
+  if (!financialData?.monthlyTrend) {
+    return <div>جاري تحميل البيانات...</div>;
+  }
+
+  const chartData = {
+    labels: financialData.monthlyTrend.map(m => m.month) || [],
+    datasets: [
+      {
+        label: 'الدخل',
+        data: financialData.monthlyTrend.map(m => m.income) || [],
+        backgroundColor: '#3B82F6'
+      },
+      {
+        label: 'المصروفات',
+        data: financialData.monthlyTrend.map(m => m.expenses) || [],
+        backgroundColor: '#10B981'
+      }
+    ]
+  };
+
   return (
     <div className="space-y-6">
-      <div className="flex justify-end gap-4 mb-6">
-        <ExportButton format="pdf" />
-        <ExportButton format="excel" />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <ReportCarda 
-          title="أداء المحفظة"
-          data={financialData.portfolio}
-          type="line-chart"
-        />
-        <ReportCarda 
-          title="المقارنة مع الأهداف"
-          data={financialData.goals}
-          type="bar-chart"
+      <div className="h-[400px]">
+        <Bar 
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false
+          }}
         />
       </div>
     </div>
