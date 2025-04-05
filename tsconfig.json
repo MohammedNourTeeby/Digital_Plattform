@@ -18,10 +18,12 @@
         "name": "next"
       }
     ],
+   "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@/data/*": ["./src/data/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/AdvancedFinancialDashboard .jsx", "components/Header.jsx"],
   "exclude": ["node_modules"]
 }

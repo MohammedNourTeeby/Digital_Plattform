@@ -1,0 +1,39 @@
+{
+    "users": [
+      {
+        "id": 1,
+        "name": "User 1",
+        "balance": 5000,
+        "investments": [
+          {
+            "planId": 1,
+            "amount": 100,
+            "startDate": "2024-03-01"
+          }
+        ]
+      }
+    ],
+    "plans": [
+      {
+        "id": 1,
+        "name": "الخطة الذهبية",
+        "minAmount": 100,
+        "duration": 4,
+        "monthlyReturn": 150
+      }
+    ],
+    "orders": {
+      "buy": [
+        { "id": 1, "price": 100, "amount": 500 },
+        { "id": 2, "price": 99, "amount": 300 }
+      ],
+      "sell": [
+        { "id": 3, "price": 105, "amount": 700 },
+        { "id": 4, "price": 107, "amount": 200 }
+      ]
+    },
+    "candles": [
+      { "time": "09:00", "open": 100, "high": 105, "low": 98, "close": 103 },
+      { "time": "10:00", "open": 103, "high": 108, "low": 102, "close": 107 }
+    ]
+  }
