@@ -1,5 +1,5 @@
 import TradeHistory from '@/components/TradeHistory';
-import { tradeHistory } from '../../../../data';
+import { tradeHistory } from '../../../../data/tradeHistory';
 
 export default function TradeHistoryPage() {
   return (

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import TradingChart from '@/components/TradingChart';
 import OrderForm from '@/components/OrderForm';
 import MarketData from '@/components/MarketData';
+import History from '../trading/history/page';
 
 export default function TradingPage() {
   const [activeTab, setActiveTab] = useState('buy');
@@ -39,6 +40,9 @@ export default function TradingPage() {
         
         <OrderForm type={activeTab} />
       </div>
+      <div className="bg-white rounded-xl shadow p-6">
+          <History />
+        </div>
     </div>
   );
 }
