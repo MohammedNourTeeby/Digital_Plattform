@@ -4,6 +4,9 @@ import TradingChart from '@/components/TradingChart';
 import OrderForm from '@/components/OrderForm';
 import MarketData from '@/components/MarketData';
 import History from '../trading/history/page';
+import LiveCandleChart from '@/components/LiveCandleChart';
+import TradingConsole from '@/components/TradingConsole';
+import { initialCandles } from '../../../data/candles';
 
 export default function TradingPage() {
   const [activeTab, setActiveTab] = useState('buy');
@@ -43,6 +46,18 @@ export default function TradingPage() {
       <div className="bg-white rounded-xl shadow p-6">
           <History />
         </div>
+        <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2">
+        <div className="bg-white rounded-xl shadow p-6">
+          <h2 className="text-xl font-bold mb-4">مخطط الشموع</h2>
+          <LiveCandleChart data={initialCandles} />
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-xl shadow p-6">
+        <TradingConsole />
+      </div>
+    </div>
     </div>
   );
 }

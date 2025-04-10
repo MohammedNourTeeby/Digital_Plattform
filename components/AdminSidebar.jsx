@@ -12,6 +12,8 @@ export default function AdminSidebar() {
     { href: '/admin/transactions', label: 'المعاملات' },
     { href: '/admin/trading', label: 'تحليل التداول' },
     { href: '/admin/reports', label: 'التقارير' },
+    { href: '/admin/candle-management', label: 'إدارة الشموع' },
+
     { href: '/admin/settings', label: 'الإعدادات' }
 
 
