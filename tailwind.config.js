@@ -13,8 +13,14 @@ module.exports = {
         Tajawal: ["Tajawal", "sans-serif"],
       },
       colors: {
+        "red-400": "#f87171",
+        "blue-400": "#60a5fa",
+        "gray-800": "#1f2937",
+        "gray-700": "#374151",
+        "gray-600": "#4b5563",
+        "blue-400": "#60a5fa",
+        "green-400": "#34d399",
         "user-primary": "#1E40AF",
-        "user-secondary": "#3B82F6",
         security: "#3B82F6",
         alert: "#EF4444",
         "report-primary": "#1E3A8A",
@@ -25,6 +31,9 @@ module.exports = {
         indigo: {
           600: "#4F46E5",
         },
+      },
+      backdropBlur: {
+        sm: "4px",
       },
     },
   },
