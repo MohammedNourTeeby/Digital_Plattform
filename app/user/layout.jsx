@@ -1,39 +1,53 @@
-// Layout.jsx
-"use client";
+import './globals.css';
+import { Inter } from 'next/font/google';
 import { useState } from 'react';
-import LeftSidebar from './components/LeftSidebar';
-import RightSidebar from './components/RightSidbar';
+import LeftSidebar from '@/components/LeftSidebar';
+import RightSidebar from '@/components/RightSidebar';
 
-export default function Layout({ children }) {
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  title: 'منصة التداول',
+  description: 'منصة تداول العملات الرقمية',
+};
+
+export default function RootLayout({ children }) {
   const [leftCollapsed, setLeftCollapsed] = useState(false);
   const [rightCollapsed, setRightCollapsed] = useState(false);
 
-  const leftWidth = leftCollapsed ? 80 : 256; // 64*4 (tailwind uses rem)
-  const rightWidth = rightCollapsed ? 80 : 256;
+  const leftWidth = leftCollapsed ? '64px' : '256px';
+  const rightWidth = rightCollapsed ? '64px' : '256px';
 
   return (
-    <div className="relative h-screen">
-      <LeftSidebar 
-        isCollapsed={leftCollapsed} 
-        setIsCollapsed={setLeftCollapsed} 
-      />
-      
-      <RightSidebar 
-        isCollapsed={rightCollapsed} 
-        setIsCollapsed={setRightCollapsed} 
-      />
+    <html lang="ar" dir="rtl">
+      <body className={inter.className}>
+        <div className="flex h-screen">
+          {/* الشريط الجانبي الأيسر */}
+          <LeftSidebar 
+            isCollapsed={leftCollapsed} 
+            toggleCollapse={() => setLeftCollapsed(!leftCollapsed)}
+            width={leftWidth}
+          />
 
-      <main 
-        className="h-full transition-all duration-300 ease-in-out"
-        style={{
-          marginLeft: `${leftWidth}px`,
-          marginRight: `${rightWidth}px`,
-        }}
-      >
-        <div className="p-8 h-full overflow-auto">
-          {children}
+          {/* المحتوى الرئيسي */}
+          <main 
+            className="flex-1 p-4 overflow-y-auto transition-all"
+            style={{
+              marginLeft: leftWidth,
+              marginRight: rightWidth
+            }}
+          >
+            {children}
+          </main>
+
+          {/* الشريط الجانبي الأيمن */}
+          <RightSidebar 
+            isCollapsed={rightCollapsed} 
+            toggleCollapse={() => setRightCollapsed(!rightCollapsed)}
+            width={rightWidth}
+          />
         </div>
-      </main>
-    </div>
+      </body>
+    </html>
   );
 }

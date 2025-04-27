@@ -9,7 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@faker-js/faker": "^9.7.0",
     "@headlessui/react": "^2.2.1",
+    "@heroicons/react": "^2.2.0",
+    "@nextui-org/react": "^2.6.11",
     "@tanstack/react-table": "^8.21.2",
     "chart.js": "^4.4.8",
     "chartjs-adapter-date-fns": "^3.0.0",

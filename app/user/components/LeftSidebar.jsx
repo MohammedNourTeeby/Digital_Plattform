@@ -1,10 +1,9 @@
 "use client";
 import { useState } from 'react';
-import { FiPackage, FiTrendingUp, FiUserPlus, FiUsers, FiSettings, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiPackage, FiTrendingUp, FiUserPlus, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
-const LeftSidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeItem, setActiveItem] = useState('الرئيسية');
+const LeftSidebar = ({ isCollapsed, toggleCollapse }) => {
+  const [activeItem, setActiveItem] = useState('الصفقات');
 
   const menuItems = [
     { name: 'الصفقات', icon: <FiPackage /> },
@@ -19,15 +18,13 @@ const LeftSidebar = () => {
         fixed top-0 left-0 z-50 shadow-xl`}
     >
       <div className="p-4 flex flex-col h-full">
-        {/* زر التجميع */}
         <button 
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleCollapse}
           className="mb-8 p-2 hover:bg-gray-800 rounded-full self-end transition-colors"
         >
           {isCollapsed ? <FiChevronRight size={24} /> : <FiChevronLeft size={24} />}
         </button>
 
-        {/* عناصر القائمة */}
         <nav className="flex-1">
           {menuItems.map((item) => (
             <a
@@ -45,7 +42,6 @@ const LeftSidebar = () => {
           ))}
         </nav>
 
-        {/* قسم المستخدم */}
         <div className={`border-t border-gray-700 pt-4 ${isCollapsed ? 'px-2' : 'px-4'}`}>
           <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-start'}`}>
             <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">

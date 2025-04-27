@@ -1,23 +1,22 @@
 "use client"
-import FinanceCenter from './components/FinanceCenter';
-import TradePanel from './components/TradePanel';
-
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+
+const ProfessionalTradingWidget = dynamic(
+  () => import('./components/ProfessionalTradingWidget'),
+  { ssr: false }
+);
 
 export default function UserDashboard() {
-  return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center  p-4">
-      <motion.div 
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className=" max-w-1xl top-0"
-      >
-        <FinanceCenter />
-      </motion.div>
-      <TradePanel />
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
+  const [rightCollapsed, setRightCollapsed] = useState(false);
 
-      {/* باقي المحتوى */}
-    </div>
+  return (
+    <div className="min-h-screen bg-gray-900 flex flex-col p-3">
+     <div className="h-screen w-full flex flex-col">
+  <ProfessionalTradingWidget />
+</div>
+      </div>
   )
 }

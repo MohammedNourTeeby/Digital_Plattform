@@ -1,24 +1,34 @@
+'use client'
 import './globals.css';
 import { Inter } from 'next/font/google';
-import { ReactNode } from 'react'; // أضف هذا الاستيراد
+import LeftSidebar from '@/app/user/components/LeftSidebar';
+import RightSidebar from '@/app/user/components/RightSidbar';
+import { useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata = {
-  title: 'منصة التداول',
-  description: 'منصة تداول العملات الرقمية',
-};
+export default function RootLayout({ children }) {
+  const [leftCollapsed, setLeftCollapsed] = useState(true);
+  const [rightCollapsed, setRightCollapsed] = useState(true);
 
-// أضف تعريف الأنواع هنا
-interface RootLayoutProps {
-  children: ReactNode;
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="ar" dir="rtl">
       <body className={inter.className}>
-        {children}
+        <div className="flex h-screen">
+          <LeftSidebar 
+            isCollapsed={leftCollapsed} 
+            toggleCollapse={() => setLeftCollapsed(!leftCollapsed)} 
+          />
+          
+          <main className="flex-1 p-4 overflow-y-auto relative">
+            {children}
+          </main>
+          
+          <RightSidebar
+            isCollapsed={rightCollapsed}
+            toggleCollapse={() => setRightCollapsed(!rightCollapsed)}
+          />
+        </div>
       </body>
     </html>
   );
