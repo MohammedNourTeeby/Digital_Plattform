@@ -13,6 +13,9 @@ module.exports = {
         Tajawal: ["Tajawal", "sans-serif"],
       },
       colors: {
+        "deep-blue": "#1A365D",
+        "soft-emerald": "#D1FAE5",
+        "light-purple": "#F3E8FF",
         "red-400": "#f87171",
         "blue-400": "#60a5fa",
         "gray-800": "#1f2937",

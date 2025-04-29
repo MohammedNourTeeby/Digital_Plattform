@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.0",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@faker-js/faker": "^9.7.0",
     "@headlessui/react": "^2.2.1",
     "@heroicons/react": "^2.2.0",
@@ -20,7 +23,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "file-saver": "^2.0.5",
-    "framer-motion": "^12.6.2",
+    "framer-motion": "^10.16.0",
     "jspdf": "^3.0.1",
     "jspdf-autotable": "^5.0.2",
     "lightweight-charts": "^3.8.0",

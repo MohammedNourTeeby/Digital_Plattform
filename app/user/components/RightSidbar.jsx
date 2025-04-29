@@ -7,6 +7,11 @@ import dynamic from 'next/dynamic';
 const FinanceResources = dynamic(() => import('./FinanceResources'));
 const Profile = dynamic(() => import('../account/profile/page'));
 const Kuc = dynamic(() => import('../account/kyc/page'));
+const App = dynamic(() => import('./App'));
+const EducationSection = dynamic(() => import('./EducationSection'));
+const HelpSection = dynamic(() => import('./HelpSection'));
+const PartnerAccount = dynamic(() => import('./PartnerAccount'));
+const BattlesComponent = dynamic(() => import('./BattlesComponent'));
 
 const RightSidebar = ({ isCollapsed, toggleCollapse }) => {
   const [activeItem, setActiveItem] = useState(null);
@@ -20,11 +25,11 @@ const RightSidebar = ({ isCollapsed, toggleCollapse }) => {
     { name: 'المهارة المالية', icon: <FiDollarSign />, panel: 'finance' },
     { name: 'الملف الشخصي', icon: <FiUser />, panel: 'profile' },
     { name: 'الانجازات', icon: <FiAward />, panel: 'achievements' },
-    { name: 'التطبيقات', icon: <FiGrid />, action: () => {} },
-    { name: 'التعليم', icon: <FiBook />, action: () => {} },
-    { name: 'مساعدة', icon: <FiHelpCircle />, action: () => {} },
-    { name: 'كن شريكا', icon: <FaHandshake />, action: () => {} },
-    { name: 'المعارف', icon: <FiDatabase />, action: () => {} },
+    { name: 'التطبيقات', icon: <FiGrid />, panel: 'app' },
+    { name: 'التعليم', icon: <FiBook />, panel: 'Education'  },
+    { name: 'مساعدة', icon: <FiHelpCircle />, panel: 'help' },
+    { name: 'كن شريكا', icon: <FaHandshake />, panel: 'Partner' },
+    { name: 'المعارك', icon: <FiDatabase />, panel: 'Battles'},
     { name: 'المستخدمين', icon: <FiUsers />, action: () => {} },
     { name: 'الإعدادات', icon: <FiSettings />, action: () => {} },
   ];
@@ -64,6 +69,16 @@ const RightSidebar = ({ isCollapsed, toggleCollapse }) => {
         return <Profile className="w-full" />;
       case 'achievements':
         return <Kuc className="w-full" />;
+        case 'app':
+        return <App className="w-full" />;
+        case 'Education':
+        return <EducationSection className="w-full" />;
+        case 'help':
+        return <HelpSection className="w-full" />;
+        case 'Partner':
+        return <PartnerAccount className="w-full" />;
+        case 'Battles':
+          return <BattlesComponent className="w-full" />;
       default:
         return null;
     }
