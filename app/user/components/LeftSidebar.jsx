@@ -12,6 +12,9 @@ import dynamic from "next/dynamic";
 const RecentMatches = dynamic(() => import("./RecentMatches"));
 const TrendingPairs = dynamic(() => import("./TrendingPairs"));
 const SocialTrading = dynamic(() => import("./SocialTrading"));
+const ReferralProgram = dynamic(() => import("./ReferralProgram"));
+const InventorySection  = dynamic(() => import("./InventorySection"));
+const FinancialInterface  = dynamic(() => import("./FinancialInterface"));
 
 const LeftSidebar = ({ isCollapsed, toggleCollapse }) => {
   const [activePanel, setActivePanel] = useState(null);
@@ -24,8 +27,11 @@ const LeftSidebar = ({ isCollapsed, toggleCollapse }) => {
       icon: <FiPackage />,
       panel: "recentMatches",
     },
+    { name: "المالية", icon: <FiTrendingUp />, panel: "finicial" },
     { name: "الرائج", icon: <FiTrendingUp />, panel: "tradel" },
     { name: "الاجتماعية", icon: <FiUserPlus />, panel: "social" },
+    { name: "الإحالة ", icon: <FiUserPlus />, panel: "Referral" },
+    { name: "المخزون ", icon: <FiUserPlus />, panel: "Inventory" },
   ];
 
   const togglePanel = (panelType) => {
@@ -53,7 +59,12 @@ const LeftSidebar = ({ isCollapsed, toggleCollapse }) => {
         return <TrendingPairs className="w-full" />;
       case "social":
         return <SocialTrading className="w-full" />;
-     
+     case "Referral":
+        return <ReferralProgram  className="w-full" />;
+        case "Inventory":
+        return <InventorySection   className="w-full" />;
+         case "finicial":
+        return <FinancialInterface   className="w-full" />;
     }
   };
 

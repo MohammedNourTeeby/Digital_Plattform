@@ -12,6 +12,7 @@ const EducationSection = dynamic(() => import('./EducationSection'));
 const HelpSection = dynamic(() => import('./HelpSection'));
 const PartnerAccount = dynamic(() => import('./PartnerAccount'));
 const BattlesComponent = dynamic(() => import('./BattlesComponent'));
+const AccountTypes  = dynamic(() => import('./AccountTypes'));
 
 const RightSidebar = ({ isCollapsed, toggleCollapse }) => {
   const [activeItem, setActiveItem] = useState(null);
@@ -28,6 +29,7 @@ const RightSidebar = ({ isCollapsed, toggleCollapse }) => {
     { name: 'التطبيقات', icon: <FiGrid />, panel: 'app' },
     { name: 'التعليم', icon: <FiBook />, panel: 'Education'  },
     { name: 'مساعدة', icon: <FiHelpCircle />, panel: 'help' },
+    { name: 'أنواع الحسابات', icon: <FiHelpCircle />, panel: 'Acounts' },
     { name: 'كن شريكا', icon: <FaHandshake />, panel: 'Partner' },
     { name: 'المعارك', icon: <FiDatabase />, panel: 'Battles'},
     { name: 'المستخدمين', icon: <FiUsers />, action: () => {} },
@@ -79,6 +81,8 @@ const RightSidebar = ({ isCollapsed, toggleCollapse }) => {
         return <PartnerAccount className="w-full" />;
         case 'Battles':
           return <BattlesComponent className="w-full" />;
+          case 'Acounts':
+          return <AccountTypes  className="w-full" />;
       default:
         return null;
     }

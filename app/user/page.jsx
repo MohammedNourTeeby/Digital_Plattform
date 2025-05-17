@@ -2,11 +2,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import TradingInterface from './TradingInterface/page';
 
-const ProfessionalTradingWidget = dynamic(
-  () => import('./components/ProfessionalTradingWidget'),
-  { ssr: false }
-);
+
 
 export default function UserDashboard() {
   const [leftCollapsed, setLeftCollapsed] = useState(false);
@@ -15,7 +13,7 @@ export default function UserDashboard() {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col p-3">
      <div className="h-screen w-full flex flex-col">
-  <ProfessionalTradingWidget />
+  <TradingInterface />
 </div>
       </div>
   )

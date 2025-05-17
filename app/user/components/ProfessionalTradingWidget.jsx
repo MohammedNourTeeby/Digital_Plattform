@@ -1,311 +1,313 @@
-// ProfessionalTradingWidget.js
-'use client'
-import { useState, useEffect, useRef ,useCallback } from 'react'
-import { createChart } from 'lightweight-charts'
-import { FiPlus, FiMinus, FiSettings, FiBarChart, FiArrowUp, FiArrowDown } from 'react-icons/fi'
-import { FaExpand } from 'react-icons/fa'
-import { motion } from 'framer-motion'
+"use client";
 
-const darkTheme = {
-  background: '#0a0e17',
-  gridColor: '#1c2029',
-  textColor: '#c0c5ce',
-  lineColor: '#38bdf8',
-  fillColor: 'rgba(56, 189, 248, 0.1)',
-  borderColor: '#1c2029',
-}
+import { useState, useEffect, useRef } from 'react';
+import { createChart } from 'lightweight-charts';
+import { 
+  Box, Container, Typography, Button, IconButton, 
+  TextField, AppBar, Toolbar, Badge, Avatar, 
+  Divider, Paper, Grid, Select, MenuItem 
+} from '@mui/material';
+import { 
+  Search, Add, Remove, ZoomIn, ZoomOut, 
+  Notifications, AccountBalanceWallet, AccessTime 
+} from '@mui/icons-material';
 
-const generateFakeData = (basePrice = 207.9765) => {
-  const volatility = 0.002
-  return Array.from({ length: 100 }).map((_, i) => ({
-    time: Date.now() / 1000 - (100 - i) * 60,
-    value: parseFloat(
-      (
-        basePrice + 
-        (Math.random() - 0.5) * volatility * 2 +
-        Math.sin(i / 20) * volatility * 1.5
-      ).toFixed(4)
-    )
-  }))
-}
+export default function TradingPlatform() {
+  const [balance, setBalance] = useState(10000.00);
+  const [investment, setInvestment] = useState(50);
+  const [tradeDuration, setTradeDuration] = useState("00:05");
+  const [currentPrice, setCurrentPrice] = useState(207.3270);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
-const ProfessionalTradingWidget = () => {
-  const chartContainerRef = useRef(null)
-  const chartInstance = useRef(null)
-  const areaSeriesRef = useRef(null)
-  const [chartData, setChartData] = useState(generateFakeData())
-  const [isLoading, setIsLoading] = useState(true)
-  const updateInterval = useRef(null)
-  const momentum = useRef(0)
+  const chartContainerRef = useRef(null);
+  const chartRef = useRef(null);
 
-  const initializeChart = useCallback(() => {
-    if (!chartContainerRef.current) return
-    chartInstance.current = createChart(chartContainerRef.current, {
-      layout: {
-        background: { color: darkTheme.background },
-        textColor: darkTheme.textColor,
-        fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-      },
-      grid: {
-        vertLines: { color: darkTheme.gridColor },
-        horzLines: { color: darkTheme.gridColor },
-      },
-      width: chartContainerRef.current.clientWidth,
-      height: chartContainerRef.current.clientHeight,
-      timeScale: {
-        borderColor: darkTheme.borderColor,
-        timeVisible: true,
-        secondsVisible: false,
-        shiftVisibleRangeOnNewBar: true,
-        barSpacing: 8,
-      },
-      rightPriceScale: {
-        borderVisible: false,
-        autoScale: true,
-        entireTextOnly: true,
-      },
-      handleScroll: { mouseWheel: true, pressedMouseMove: true },
-      handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true },
-      localization: { priceFormatter: (price) => price.toFixed(4) },
-    })
-    areaSeriesRef.current = chartInstance.current.addAreaSeries({
-      topColor: darkTheme.fillColor,
-      bottomColor: 'rgba(15, 23, 42, 0)',
-      lineColor: darkTheme.lineColor,
-      lineWidth: 2,
-      priceLineVisible: false,
-    })
-    areaSeriesRef.current.setData(chartData)
-    chartInstance.current.timeScale().fitContent()
-  }, [chartData])
-
-  const updateChart = useCallback(() => {
-    if (!chartInstance.current || !areaSeriesRef.current) return
-    const lastCandle = chartData[chartData.length - 1]
-    const baseValue = lastCandle.value
-    const volatility = 0.0015 + Math.random() * 0.001
-    const trend = Math.sin(Date.now() / 10000) * 0.0005
-    momentum.current = momentum.current * 0.7 + (Math.random() - 0.5) * 0.002
-    const newValue = parseFloat((
-      baseValue + 
-      trend + 
-      momentum.current + 
-      (Math.random() - 0.5) * volatility
-    ).toFixed(4))
-    const newCandle = {
-      time: Date.now() / 1000,
-      value: newValue,
+  const generateMockData = () => {
+    const data = [];
+    const now = new Date();
+    for (let i = 0; i < 100; i++) {
+      const time = new Date(now.getTime() - (100 - i) * 60000);
+      data.push({
+        time: Math.floor(time.getTime() / 1000),
+        value: 207.3 + (Math.random() * 0.1)
+      });
     }
-    areaSeriesRef.current.update(newCandle)
-    setChartData(prev => [...prev.slice(1), newCandle])
-  }, [chartData])
+    return data;
+  };
 
   useEffect(() => {
-    initializeChart()
-    setIsLoading(false)
-    updateInterval.current = setInterval(updateChart, 10000)
-    return () => {
-      clearInterval(updateInterval.current)
-      chartInstance.current?.remove()
+    if (chartContainerRef.current && !chartRef.current) {
+      const chart = createChart(chartContainerRef.current, {
+        width: chartContainerRef.current.clientWidth,
+        height: 400,
+        layout: {
+          background: { color: '#151924' },
+          textColor: '#d1d4dc',
+        },
+        grid: {
+          vertLines: { color: 'rgba(42, 46, 57, 0.5)' },
+          horzLines: { color: 'rgba(42, 46, 57, 0.5)' },
+        },
+        timeScale: {
+          timeVisible: true,
+          secondsVisible: true,
+        },
+      });
+
+      const areaSeries = chart.addAreaSeries({
+        topColor: 'rgba(38, 198, 218, 0.56)',
+        bottomColor: 'rgba(38, 198, 218, 0.04)',
+        lineColor: 'rgba(38, 198, 218, 1)',
+        lineWidth: 2,
+      });
+
+      const initialData = generateMockData();
+      areaSeries.setData(initialData);
+
+      chartRef.current = { chart, areaSeries };
+
+      const priceLine = {
+        price: 207.3270,
+        color: '#2196F3',
+        lineWidth: 2,
+        lineStyle: 0,
+        axisLabelVisible: true,
+        title: '\\\$91.00',
+      };
+
+      areaSeries.createPriceLine(priceLine);
+
+      const interval = setInterval(() => {
+        const lastData = initialData[initialData.length - 1];
+        const newTime = lastData.time + 60;
+        const newValue = lastData.value + (Math.random() * 0.02 - 0.01);
+        areaSeries.update({ time: newTime, value: newValue });
+        setCurrentPrice(newValue.toFixed(4));
+
+        if (initialData.length > 100) initialData.shift();
+        initialData.push({ time: newTime, value: newValue });
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+        chart.remove();
+        chartRef.current = null;
+      };
     }
-  }, [initializeChart, updateChart])
+  }, []);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (chartContainerRef.current) {
-        chartInstance.current.applyOptions({
-          width: chartContainerRef.current.clientWidth,
-          height: chartContainerRef.current.clientHeight
-        })
-      }
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleInvestmentChange = (amount) => {
+    const newValue = investment + amount;
+    if (newValue >= 10 && newValue <= 5000) {
+      setInvestment(newValue);
     }
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  };
+
+  const handleTrade = (type) => {
+    alert(`تم تنفيذ عملية ${type === 'buy' ? 'شراء' : 'بيع'} بقيمة ${investment}`);
+  };
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  };
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString('ar-EG', { day: '2-digit', month: 'short' });
+  };
+
+  const priceLevels = [
+    207.3350, 207.3315, 207.3300, 207.3285, 207.3270, 
+    207.3255, 207.3250, 207.3240, 207.3225, 207.3150, 
+    207.3050, 207.2950
+  ];
+
+  const handleFinancialResourcesClick = () => {
+    alert(`الرصيد الحقيقي: ${balance.toFixed(2)}`); // إضافة قوس مغلق هنا
+};
+
 
   return (
-    <div className="w-full h-screen relative bg-[#0a0e17]">
-      {/* Full-screen Chart Container */}
-      <div 
-        ref={chartContainerRef}
-        className="w-full h-full absolute inset-0"
-      >
-        {isLoading && (
-          <div className="absolute inset-0 bg-gray-900/80 flex items-center justify-center">
-            <div className="animate-pulse text-sky-500">تحميل البيانات...</div>
-          </div>
-        )}
-      </div>
-
-      {/* Top Bar */}
-      <div className="absolute top-0 left-0 w-full p-4 flex justify-between items-center z-10">
-        <div className="flex gap-4">
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          </button>
-          <div className="bg-blue-500 px-6 py-2 rounded-lg text-white font-semibold">
-            الموارد المالية
-          </div>
-          <div className="bg-gray-700 px-6 py-2 rounded-lg text-white font-semibold">
-            الرصيد الحقيقي
-          </div>
-        </div>
-        <div className="text-white">$0.00</div>
-      </div>
-
-      {/* Bottom Panel */}
-      <motion.div 
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="absolute bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-sm border-t border-gray-700 z-10"
-      >
-        <div className="max-w-7xl mx-auto p-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex gap-2 text-gray-400">
-              <FiSettings className="hover:text-blue-400 cursor-pointer text-xl" />
-              <FiBarChart className="hover:text-green-400 cursor-pointer text-xl" />
-              <FaExpand className="hover:text-purple-400 cursor-pointer text-xl" />
-            </div>
-            <h3 className="text-base font-semibold text-gray-200">لوحة التداول</h3>
-            <div className="flex gap-3">
-              <button className="bg-gray-700 hover:bg-gray-600 rounded-full p-1.5">
-                <FiPlus className="text-green-400 text-lg" />
-              </button>
-              <button className="bg-gray-700 hover:bg-gray-600 rounded-full p-1.5">
-                <FiMinus className="text-red-400 text-lg" />
-              </button>
-            </div>
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="bg-gray-800 rounded-xl p-3 flex flex-col items-center hover:bg-gray-700/80 transition">
-              <div className="mb-1">
-                <span className="text-sm text-gray-400">00:05</span>
-              </div>
-              <span className="text-xs text-gray-400">مدة الصفقة</span>
-            </div>
-            <div className="bg-gray-800 rounded-xl p-3 flex flex-col">
-              <div className="relative w-full h-10">
-                <div className="absolute inset-0 bg-green-500/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500" style={{ width: '82%' }} />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-end pr-3">
-                  <FiArrowUp className="text-green-500 text-xl z-10" />
-                </div>
-              </div>
-              <div className="flex justify-between mt-2">
-                <span className="text-xs text-gray-400">شراء</span>
-                <span className="text-sm text-green-500">82%</span>
-              </div>
-            </div>
-            <div className="bg-gray-800 rounded-xl p-3 flex flex-col">
-              <div className="relative w-full h-10">
-                <div className="absolute inset-0 bg-red-500/20 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500" style={{ width: '82%' }} />
-                </div>
-                <div className="absolute inset-0 flex items-center justify-end pr-3">
-                  <FiArrowDown className="text-red-500 text-xl z-10" />
-                </div>
-              </div>
-              <div className="flex justify-between mt-2">
-                <span className="text-xs text-gray-400">بيع</span>
-                <span className="text-sm text-red-500">82%</span>
-              </div>
-            </div>
-            <div className="bg-gray-800 rounded-xl p-3 flex flex-col items-center hover:bg-gray-700/80 transition">
-              <div className="mb-1">
-                <span className="text-sm text-gray-400">$50</span>
-              </div>
-              <span className="text-xs text-gray-400">الاستثمار</span>
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Floating Trading Form */}
-      <div className="absolute bottom-20 right-20 w-80 bg-gray-900/90 backdrop-blur-sm rounded-xl p-4 border border-gray-700 shadow-xl z-10">
-        <div className="flex gap-2 mb-4">
-          <button
-            type="button"
-            onClick={() => console.log('Buy')}
-            className="flex-1 p-2 rounded-lg transition-colors bg-green-600 hover:bg-green-700 text-white"
-          >
-            شراء
-          </button>
-          <button
-            type="button"
-            onClick={() => console.log('Sell')}
-            className="flex-1 p-2 rounded-lg transition-colors bg-red-600 hover:bg-red-700 text-white"
-          >
-            بيع
-          </button>
-        </div>
-        <form className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">نوع الطلب</label>
-              <select className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200">
-                <option>سوق</option>
-                <option>حد</option>
-                <option>وقف</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm text-gray-400 mb-1">الرافعة</label>
-              <select className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200">
-                <option>1x</option>
-                <option>5x</option>
-                <option>10x</option>
-                <option>20x</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">المبلغ</label>
-            <input
-              type="number"
-              step="0.01"
-              className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200"
-              placeholder="0.00"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm text-gray-400 mb-1">السعر</label>
-            <input
-              type="number"
-              step="0.0001"
-              className="w-full p-2 bg-gray-700 border border-gray-600 rounded-md text-gray-200"
-              placeholder="0.0000"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full py-3 px-4 rounded-md font-semibold text-white shadow-sm transition-colors bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800"
-          >
-            تأكيد الطلب
-          </button>
-        </form>
-      </div>
-
-      {/* Chart Overlay */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white">
-          Smarty
-        </div>
-        <div className="absolute bottom-10 left-10 text-white">
-          <div className="flex items-center gap-2">
-            <div className="bg-green-500 rounded-full w-3 h-3"></div>
-            <span>$91.00</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="bg-red-500 rounded-full w-3 h-3"></div>
-            <span>$91.00</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+    <Box sx={{ bgcolor: '#151924', minHeight: '100vh' }} className="">
+      <AppBar position="static" color="default" elevation={1} >
+        <Toolbar >
+          <IconButton edge="center" color="inherit">
+            <Search />
+          </IconButton>
+          
+          <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+            <Paper elevation={0} sx={{ px: 2, py: 1, bgcolor: '#f0f0f0', borderRadius: 2 }}>
+              <Button onClick={handleFinancialResourcesClick}>
+                الموارد المالية
+              </Button>
+            </Paper>
+          </Box>
+          
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Badge badgeContent={3} color="error">
+              <Notifications />
+            </Badge>
+            
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <AccountBalanceWallet sx={{ mr: 1 }} />
+              <Typography variant="subtitle1">
+                ${balance.toFixed(2)} الرصيد الحقيقي ▾
+              </Typography>
+            </Box>
+            
+            <Avatar>S</Avatar>
+          </Box>
+        </Toolbar>
+      </AppBar>
+      
+      <Container maxWidth="xl" sx={{ mt: 2 }}  >
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h6">Smarty S</Typography>
+        </Box>
+        
+        <Paper elevation={3} sx={{ position: 'relative', mb: 2, p: 1, bgcolor: '#151924' }}>
+          <Box sx={{ 
+            position: 'absolute', 
+            left: 10, 
+            top: 10, 
+            bottom: 10, 
+            width: 80,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            zIndex: 1
+          }}>
+            {priceLevels.map((price, index) => (
+              <Typography 
+                key={index} 
+                variant="caption" 
+                sx={{ 
+                  color: price === 207.3270 ? '#2196F3' : '#d1d4dc',
+                  fontWeight: price === 207.3270 ? 'bold' : 'normal'
+                }}
+              >
+                {price.toFixed(4)}
+              </Typography>
+            ))}
+          </Box>
+          
+          <Box 
+            ref={chartContainerRef} 
+            sx={{ 
+              height: 400, 
+              width: '100%', 
+              ml: '80px' 
+            }} 
+          />
+          
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            gap: 2, 
+            mt: 1,
+            color: 'white'
+          }}>
+            <IconButton size="small" sx={{ color: 'white' }}>
+              <ZoomOut />
+            </IconButton>
+            <IconButton size="small" sx={{ color: 'white' }}>
+              <ZoomIn />
+            </IconButton>
+          </Box>
+        </Paper>
+        
+        <Paper elevation={3} sx={{ p: 2 }}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} md={3}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <AccessTime sx={{ mr: 1 }} />
+                <Select
+                  value={tradeDuration}
+                  onChange={(e) => setTradeDuration(e.target.value)}
+                  size="small"
+                  sx={{ minWidth: 120 }}
+                >
+                  <MenuItem value="00:05">00:05 مدة الصفقة</MenuItem>
+                  <MenuItem value="00:15">00:15 مدة الصفقة</MenuItem>
+                  <MenuItem value="00:30">00:30 مدة الصفقة</MenuItem>
+                  <MenuItem value="01:00">01:00 مدة الصفقة</MenuItem>
+                </Select>
+              </Box>
+            </Grid>
+            
+            <Grid item xs={12} md={6}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                <Button 
+                  variant="contained" 
+                  color="success" 
+                  size="large"
+                  onClick={() => handleTrade('buy')}
+                  sx={{ px: 4 }}
+                >
+                  شراء (82%)
+                </Button>
+                
+                <Button 
+                  variant="contained" 
+                  color="error" 
+                  size="large"
+                  onClick={() => handleTrade('sell')}
+                  sx={{ px: 4 }}
+                >
+                  بيع (82%)
+                </Button>
+              </Box>
+            </Grid>
+            
+            <Grid item xs={12} md={3}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                <IconButton onClick={() => handleInvestmentChange(-10)}>
+                  <Remove />
+                </IconButton>
+                
+                <TextField
+                  value={investment}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    if (!isNaN(value) && value >= 10 && value <= 5000) {
+                      setInvestment(value);
+                    }
+                  }}
+                  InputProps={{
+                    startAdornment: <Typography sx={{ mr: 1 }}>$</Typography>,
+                    endAdornment: <Typography sx={{ ml: 1 }}>الاستثمار</Typography>
+                  }}
+                  sx={{ width: 150 }}
+                />
+                
+                <IconButton onClick={() => handleInvestmentChange(10)}>
+                  <Add />
+                </IconButton>
+              </Box>
+            </Grid>
+          </Grid>
+          
+          <Divider sx={{ my: 2 }} />
+          
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Typography variant="body2">
+              {formatDate(currentTime)} {formatTime(currentTime)}
+            </Typography>
+            
+            <Typography variant="body2">
+              السعر الحالي: {currentPrice}
+            </Typography>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
+  );
 }
-
-export default ProfessionalTradingWidget
+  

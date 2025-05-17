@@ -4,6 +4,8 @@ import { Inter } from 'next/font/google';
 import LeftSidebar from '@/app/user/components/LeftSidebar';
 import RightSidebar from '@/app/user/components/RightSidbar';
 import { useState } from 'react';
+import { expertTheme } from './theme';
+import { ThemeProvider } from '@mui/material/styles';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +23,11 @@ export default function RootLayout({ children }) {
           />
           
           <main className="flex-1 p-4 overflow-y-auto relative">
+                    <ThemeProvider theme={expertTheme}>
+
             {children}
+                    </ThemeProvider>
+
           </main>
           
           <RightSidebar
